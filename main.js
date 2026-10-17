@@ -3,6 +3,44 @@ document.documentElement.classList.add('js');
 
 const reduceMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
+// Modo claro / oscuro. El modo inicial lo pone el script del <head>;
+// al cambiarlo se lanza "themechange" para que los dibujos se repinten con sus colores
+const themeToggle = document.querySelector('.theme-toggle');
+const systemDark = window.matchMedia('(prefers-color-scheme: dark)');
+
+function setTheme(theme, remember) {
+  document.documentElement.dataset.theme = theme;
+  // Hechizos de Harry Potter: «Lumos» enciende la luz, «Nox» la apaga
+  themeToggle.title = theme === 'dark' ? 'Lumos' : 'Nox';
+  themeToggle.setAttribute('aria-label', theme === 'dark' ? 'Lumos: cambiar a modo claro' : 'Nox: cambiar a modo oscuro');
+
+  // Color de la barra del navegador en el móvil
+  document.querySelectorAll('meta[name="theme-color"]').forEach((meta) => {
+    meta.content = theme === 'dark' ? '#15110e' : '#f7f2ea';
+  });
+
+  if (remember) {
+    try { localStorage.setItem('theme', theme); } catch (e) { /* sin almacenamiento: solo dura esta visita */ }
+  }
+
+  document.dispatchEvent(new Event('themechange'));
+}
+
+if (themeToggle) {
+  setTheme(document.documentElement.dataset.theme, false);
+
+  themeToggle.addEventListener('click', () => {
+    setTheme(document.documentElement.dataset.theme === 'dark' ? 'light' : 'dark', true);
+  });
+
+  // Si nunca has pulsado el botón, sigue los cambios del sistema
+  systemDark.addEventListener('change', (e) => {
+    let saved = null;
+    try { saved = localStorage.getItem('theme'); } catch (err) { /* nada */ }
+    if (!saved) setTheme(e.matches ? 'dark' : 'light', false);
+  });
+}
+
 // Verbo y palabra que cambian juntos en la portada ("Pienso cada clic"...)
 const rotator = document.querySelector('.rotator');
 
@@ -100,7 +138,7 @@ function drawReflection(shimmer) {
 
 if (reflection) {
   drawReflection(false);
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => drawReflection(false));
+  document.addEventListener('themechange', () => drawReflection(false));
 
   // Brillo: cambia a saltos, sin suavizar
   if (!reduceMotion) setInterval(() => drawReflection(true), 900);
@@ -109,7 +147,7 @@ if (reflection) {
 if (sun && canvas) {
   drawSun();
   // Redibuja si cambia el modo claro/oscuro
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', drawSun);
+  document.addEventListener('themechange', drawSun);
 
   // Baja despacio al cargar
   requestAnimationFrame(() => requestAnimationFrame(() => sun.classList.add('is-set')));
@@ -133,7 +171,8 @@ if (sun && canvas) {
 const clouds = document.querySelector('.clouds');
 
 if (clouds) {
-  const PX = 9; // tamaño en pantalla de cada píxel de nube
+  // Tamaño en pantalla de cada píxel de nube: más pequeñas en el móvil
+  const PX = window.innerWidth < 900 ? 6 : 9;
 
   // Cada nube es la unión de varios círculos [x, y, radio], con la base recortada en plano
   const shapes = [
@@ -186,7 +225,10 @@ if (clouds) {
     const seconds = reduceMotion ? 0 : (performance.now() - born) / 1000;
     ctx.clearRect(0, 0, clouds.width, clouds.height);
 
-    sky.forEach(({ shape, start, y, speed }) => {
+    // Menos nubes cuanto más estrecha es la pantalla, para que no se amontonen
+    const visible = cols < 60 ? 4 : cols < 140 ? 6 : sky.length;
+
+    sky.slice(0, visible).forEach(({ shape, start, y, speed }) => {
       const map = bitmaps[shape];
       const w = map[0].length;
       // Avanza en píxeles enteros y vuelve a entrar por la izquierda al salir
@@ -207,7 +249,7 @@ if (clouds) {
   draw();
 
   window.addEventListener('resize', () => { resize(); draw(); });
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { readColors(); draw(); });
+  document.addEventListener('themechange', () => { readColors(); draw(); });
 
   // A saltitos, como en los juegos antiguos (y solo mientras se ve la portada)
   if (!reduceMotion) {
@@ -234,7 +276,9 @@ if (typewriter && !reduceMotion) {
   rest.textContent = text;
 
   typewriter.replaceChildren(shown, cursor, rest);
-  figure.classList.add('is-typing');
+
+  let timer = null;
+  let started = false;
 
   const type = (i) => {
     shown.textContent = text.slice(0, i);
@@ -247,17 +291,30 @@ if (typewriter && !reduceMotion) {
 
     // Ritmo irregular, como una persona, y una pausa después de cada coma
     const pause = text[i - 1] === ',' ? 300 : 0;
-    setTimeout(() => type(i + 1), 30 + Math.random() * 45 + pause);
+    timer = setTimeout(() => type(i + 1), 30 + Math.random() * 45 + pause);
   };
 
-  // Empieza cuando la frase se ve en pantalla, solo la primera vez
-  const startObserver = new IntersectionObserver(([entry]) => {
-    if (!entry.isIntersecting) return;
-    startObserver.disconnect();
-    setTimeout(() => type(0), 500);
-  }, { threshold: 0.6 });
+  // Deja la frase en blanco, lista para volver a escribirse
+  const reset = () => {
+    clearTimeout(timer);
+    started = false;
+    shown.textContent = '';
+    rest.textContent = text;
+    figure.classList.add('is-typing');
+  };
 
-  startObserver.observe(figure);
+  reset();
+
+  // Se escribe cada vez que vuelve a verse: empieza cuando se ve bien (60 %)
+  // y se borra cuando sale del todo de la pantalla, al subir o al bajar
+  new IntersectionObserver(([entry]) => {
+    if (!entry.isIntersecting) {
+      reset();
+    } else if (entry.intersectionRatio >= 0.6 && !started) {
+      started = true;
+      timer = setTimeout(() => type(0), 500);
+    }
+  }, { threshold: [0, 0.6] }).observe(figure);
 }
 
 // Botón de email: la dirección se monta aquí para que no esté escrita entera en el HTML
@@ -343,7 +400,10 @@ if (birds) {
     ctx.fillStyle = color;
     ctx.globalAlpha = 0.6;
 
-    flocks.forEach(({ row, speed, start, pause, birds: members }) => {
+    // Menos bandadas cuanto más estrecha es la pantalla (en el móvil, sin la V de cinco)
+    const visible = cols < 150 ? [1, 2] : cols < 320 ? [0, 1, 2] : [0, 1, 2, 3, 4];
+
+    visible.map((i) => flocks[i]).forEach(({ row, speed, start, pause, birds: members }) => {
       const leadX = Math.floor((cols * start + seconds * speed) % (cols + pause));
       const baseY = Math.round(rows * row);
 
@@ -367,7 +427,7 @@ if (birds) {
   draw();
 
   window.addEventListener('resize', () => { resize(); draw(); });
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { readColor(); draw(); });
+  document.addEventListener('themechange', () => { readColor(); draw(); });
 
   if (!reduceMotion) {
     setInterval(() => {
@@ -445,7 +505,7 @@ if (leavesCanvas && !reduceMotion) {
   draw();
 
   window.addEventListener('resize', () => { resize(); draw(); });
-  window.matchMedia('(prefers-color-scheme: dark)').addEventListener('change', () => { readColors(); draw(); });
+  document.addEventListener('themechange', () => { readColors(); draw(); });
 
   // Solo se anima mientras la sección se ve en pantalla
   let leavesVisible = false;
@@ -454,6 +514,15 @@ if (leavesCanvas && !reduceMotion) {
   setInterval(() => {
     if (leavesVisible) draw();
   }, 120);
+}
+
+// Barra de progreso de peces: su animación va dentro del SVG (no la para el CSS),
+// así que si se pide menos movimiento se congela con cuatro de cinco peces
+const fishProgress = document.querySelector('.fish-progress');
+
+if (fishProgress && reduceMotion) {
+  fishProgress.pauseAnimations();
+  fishProgress.setCurrentTime(2.1);
 }
 
 // Cabecera: transparente arriba del todo, con fondo al hacer scroll

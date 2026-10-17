@@ -3,8 +3,39 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
+
+  <!-- Modo claro u oscuro antes de pintar la página (así no parpadea):
+       lo que elegiste con el botón o, si no, lo que use el sistema -->
+  <script>
+    (function () {
+      var saved = null;
+      try { saved = localStorage.getItem('theme'); } catch (e) {}
+      var dark = saved ? saved === 'dark' : matchMedia('(prefers-color-scheme: dark)').matches;
+      document.documentElement.dataset.theme = dark ? 'dark' : 'light';
+    })();
+  </script>
   <title>María José Rodríguez · HelpDesk y desarrollo web</title>
   <meta name="description" content="HelpDesk y desarrollo web desde San Fernando (Cádiz). Soporte, frontend y documentación, con el diseño como punto fuerte.">
+
+  <!-- Icono de la pestaña y del móvil -->
+  <link rel="icon" href="favicon.svg" type="image/svg+xml">
+  <link rel="icon" href="favicon-32.png" type="image/png" sizes="32x32">
+  <link rel="apple-touch-icon" href="apple-touch-icon.png">
+  <meta name="theme-color" content="#f7f2ea" media="(prefers-color-scheme: light)">
+  <meta name="theme-color" content="#15110e" media="(prefers-color-scheme: dark)">
+
+  <!-- Tarjeta al compartir el enlace (LinkedIn, WhatsApp...).
+       La imagen necesita la dirección completa: si publicas en otra, cambia og:url y og:image -->
+  <meta property="og:type" content="website">
+  <meta property="og:locale" content="es_ES">
+  <meta property="og:url" content="https://mariajoserodriguezramos.github.io/">
+  <meta property="og:title" content="María José Rodríguez · HelpDesk y desarrollo web">
+  <meta property="og:description" content="Soporte, frontend y documentación, con el diseño como punto fuerte. Aprender como forma de vida.">
+  <meta property="og:image" content="https://mariajoserodriguezramos.github.io/og-image.png">
+  <meta property="og:image:width" content="1200">
+  <meta property="og:image:height" content="630">
+  <meta property="og:image:alt" content="Atardecer pixelado: el sol se esconde en el mar entre nubes">
+  <meta name="twitter:card" content="summary_large_image">
 
   <link rel="preconnect" href="https://fonts.googleapis.com">
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
@@ -16,6 +47,22 @@
   <!-- Cabecera -->
   <header class="header">
     <a href="#inicio" class="logo">MARÍA JOSÉ RODRÍGUEZ</a>
+    <!-- Modo claro / oscuro, con guiño a Harry Potter:
+         en modo claro, Hedwig, la lechuza blanca de Harry («Nox» apaga la luz);
+         en modo oscuro, la snitch dorada («Lumos» la enciende) -->
+    <button class="theme-toggle" type="button" aria-label="Nox: cambiar a modo oscuro" title="Nox">
+      <svg class="theme-toggle__owl" viewBox="0 0 9 10" aria-hidden="true">
+        <path fill="#fffdf8" d="M1 2h7v1H1zM1 3h1v1H1zM3 3h3v1H3zM7 3h1v1H7zM2 4h2v1H2zM5 4h2v1H5zM1 5h1v1H1zM3 5h3v1H3zM7 5h1v1H7zM1 6h1v1H1zM3 6h3v1H3zM7 6h1v1H7zM2 7h5v1H2z"/>
+        <path fill="#2a2230" d="M1 0h1v1H1zM7 0h1v1H7zM1 1h7v1H1zM0 2h1v1H0zM8 2h1v1H8zM0 3h1v1H0zM2 3h1v1H2zM6 3h1v1H6zM8 3h1v1H8zM0 4h1v1H0zM8 4h1v1H8zM0 5h1v1H0zM2 5h1v1H2zM6 5h1v1H6zM8 5h1v1H8zM0 6h1v1H0zM2 6h1v1H2zM6 6h1v1H6zM8 6h1v1H8zM1 7h1v1H1zM7 7h1v1H7zM2 8h5v1H2z"/>
+        <path fill="#ff9fb2" d="M1 4h1v1H1zM7 4h1v1H7z"/>
+        <path fill="#f0a030" d="M4 4h1v1H4zM3 9h1v1H3zM5 9h1v1H5z"/>
+      </svg>
+      <svg class="theme-toggle__snitch" viewBox="0 0 13 7" aria-hidden="true">
+        <path fill="#d9d4c7" d="M0 0h2v1H0zM11 0h2v1H11zM1 1h3v1H1zM9 1h3v1H9zM2 2h2v1H2zM9 2h2v1H9z"/>
+        <path fill="#f2b632" d="M5 2h3v1H5zM4 3h1v1H4zM6 3h3v1H6zM4 4h5v1H4zM4 5h5v1H4zM5 6h3v1H5z"/>
+        <path fill="#fff1b8" d="M5 3h1v1H5z"/>
+      </svg>
+    </button>
     <nav class="nav" aria-label="Principal">
       <a href="#experiencia">Experiencia</a>
       <a href="#sobre-mi">Sobre mí</a>
@@ -51,7 +98,33 @@
         <div class="sea" aria-hidden="true"></div>
         <canvas class="reflection" aria-hidden="true"></canvas>
 
-        <p class="mono muted">Soporte. Front. Documentación. Backend, en camino.</p>
+        <p class="mono muted">
+          Soporte. Front. Documentación. Back,
+          <!-- «en progreso» y los peces van siempre juntos: este bloque no se parte -->
+          <span class="nowrap">en progreso
+          <!-- Barra de progreso de pececitos azules de 8 bits (50×4, a 2 px por píxel):
+               cinco huecos con peces apagados que se van llenando de izquierda a derecha -->
+          <svg class="fish-progress" viewBox="0 0 50 4" role="img" aria-label="barra de progreso">
+            <defs>
+              <g id="fish-a"><path fill="#1f5f9e" d="M5 0h2v1H5zM0 1h1v1H0zM0 2h2v1H0zM0 3h1v1H0z"/><path fill="#3f8fd8" d="M3 1h5v1H3zM2 2h5v1H2zM8 2h1v1H8z"/><path fill="#0b1b2e" d="M7 2h1v1H7z"/><path fill="#9fd0f2" d="M3 3h5v1H3z"/></g>
+              <g id="fish-b"><path fill="#1f5f9e" d="M5 0h2v1H5zM1 1h1v1H1zM1 2h1v1H1zM1 3h1v1H1z"/><path fill="#3f8fd8" d="M3 1h5v1H3zM2 2h5v1H2zM8 2h1v1H8z"/><path fill="#0b1b2e" d="M7 2h1v1H7z"/><path fill="#9fd0f2" d="M3 3h5v1H3z"/></g>
+              <!-- La parte visible crece 10 píxeles (un pez) cada medio segundo; llena, espera y vuelve a 0 -->
+              <clipPath id="fish-progress-fill">
+                <rect width="0" height="4">
+                  <animate attributeName="width" values="0;10;20;30;40;50;50;50" dur="4s" calcMode="discrete" repeatCount="indefinite"/>
+                </rect>
+              </clipPath>
+            </defs>
+            <g class="fish-progress__empty"><use href="#fish-a" x="0"/><use href="#fish-a" x="10"/><use href="#fish-a" x="20"/><use href="#fish-a" x="30"/><use href="#fish-a" x="40"/></g>
+            <g clip-path="url(#fish-progress-fill)">
+              <g transform="translate(0 0)"><use href="#fish-a" class="fin-a"/><use href="#fish-b" class="fin-b"/></g>
+              <g transform="translate(10 0)"><use href="#fish-a" class="fin-a"/><use href="#fish-b" class="fin-b"/></g>
+              <g transform="translate(20 0)"><use href="#fish-a" class="fin-a"/><use href="#fish-b" class="fin-b"/></g>
+              <g transform="translate(30 0)"><use href="#fish-a" class="fin-a"/><use href="#fish-b" class="fin-b"/></g>
+              <g transform="translate(40 0)"><use href="#fish-a" class="fin-a"/><use href="#fish-b" class="fin-b"/></g>
+            </g>
+          </svg></span>
+        </p>
         <a href="#experiencia" class="hero__link mono">Conóceme <span class="circle" aria-hidden="true">↓</span></a>
       </div>
 
@@ -178,6 +251,9 @@
     </section>
 
   </main>
+
+  <!-- Como un texto a medio escribir: la web (y yo) seguimos en progreso -->
+  <p class="to-be-continued mono muted">// continuará...<span class="caret" aria-hidden="true"></span></p>
 
   <!-- Contacto -->
   <footer class="footer" id="contacto">
