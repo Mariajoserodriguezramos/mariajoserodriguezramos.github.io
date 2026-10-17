@@ -61,6 +61,9 @@ if (rotator && !reduceMotion) {
   }, 3000);
 }
 
+// Tamaño base de la web (en ordenador cambia con la pantalla): los dibujos del cielo escalan con él
+const rootScale = () => parseFloat(getComputedStyle(document.documentElement).fontSize) / 16;
+
 // Sol pixelado: se dibuja en un lienzo pequeño y CSS lo amplía sin suavizar
 const sun = document.querySelector('.sun');
 const canvas = document.querySelector('.sun__canvas');
@@ -171,8 +174,8 @@ if (sun && canvas) {
 const clouds = document.querySelector('.clouds');
 
 if (clouds) {
-  // Tamaño en pantalla de cada píxel de nube: más pequeñas en el móvil
-  const PX = window.innerWidth < 900 ? 6 : 9;
+  // Tamaño en pantalla de cada píxel de nube: más pequeñas en el móvil; en ordenador, según el tamaño base
+  let PX = 9;
 
   // Cada nube es la unión de varios círculos [x, y, radio], con la base recortada en plano
   const shapes = [
@@ -216,6 +219,7 @@ if (clouds) {
   };
 
   const resize = () => {
+    PX = window.innerWidth < 900 ? 6 : Math.max(6, Math.round(9 * rootScale()));
     cols = Math.ceil(clouds.clientWidth / PX);
     clouds.width = cols;
     clouds.height = Math.ceil(clouds.clientHeight / PX);
@@ -328,7 +332,7 @@ if (mailBtn) {
 const birds = document.querySelector('.birds');
 
 if (birds) {
-  const PX = 4; // más pequeños que los de las nubes: parecen lejanos
+  let PX = 4; // más pequeños que los de las nubes: parecen lejanos (escala con el tamaño base)
 
   const frames = [
     ['#...#', '.#.#.', '..#..'], // alas arriba
@@ -388,6 +392,7 @@ if (birds) {
   };
 
   const resize = () => {
+    PX = Math.max(3, Math.round(4 * rootScale()));
     cols = Math.ceil(birds.clientWidth / PX);
     rows = Math.ceil(birds.clientHeight / PX);
     birds.width = cols;
@@ -440,7 +445,7 @@ if (birds) {
 const leavesCanvas = document.querySelector('.leaves');
 
 if (leavesCanvas && !reduceMotion) {
-  const PX = 4;
+  let PX = 4; // escala con el tamaño base
 
   // Hoja en diagonal con el nervio marcado (v); al balancearse se da la vuelta
   const sprite = ['..###', '.##v#', '##v#.', '#v#..', 'v....'];
@@ -467,6 +472,7 @@ if (leavesCanvas && !reduceMotion) {
   };
 
   const resize = () => {
+    PX = Math.max(3, Math.round(4 * rootScale()));
     cols = Math.ceil(leavesCanvas.clientWidth / PX);
     rows = Math.ceil(leavesCanvas.clientHeight / PX);
     leavesCanvas.width = cols;
@@ -525,6 +531,80 @@ if (fishProgress && reduceMotion) {
   fishProgress.setCurrentTime(2.1);
 }
 
+// Dibujos pixelados nítidos en cualquier pantalla. Con la escala de Windows al 125 %,
+// un píxel del dibujo de 2 px ocupa 2,5 píxeles reales: unos se redondean a 2 y otros a 3
+// y el dibujo se deforma (por ejemplo, un ala de la snitch más gruesa que la otra).
+// Aquí se redondea el tamaño de cada píxel a píxeles reales y se coloca el dibujo en un píxel entero.
+function crispPixels() {
+  const dpr = window.devicePixelRatio || 1;
+
+  document.querySelectorAll('svg[data-crisp]').forEach((svg) => {
+    svg.style.width = '';
+    svg.style.height = '';
+    svg.style.transform = '';
+
+    const box = svg.getBoundingClientRect();
+    if (!box.width) return; // oculto (p. ej. el icono del otro modo)
+
+    const [, , cols, rows] = svg.getAttribute('viewBox').split(' ').map(Number);
+    const unit = Math.max(1, Math.round((box.width / cols) * dpr)) / dpr;
+    svg.style.width = `${cols * unit}px`;
+    svg.style.height = `${rows * unit}px`;
+
+    const moved = svg.getBoundingClientRect();
+    const x = moved.left + window.scrollX;
+    const y = moved.top + window.scrollY;
+    const dx = (Math.round(x * dpr) - x * dpr) / dpr;
+    const dy = (Math.round(y * dpr) - y * dpr) / dpr;
+    svg.style.transform = `translate(${dx}px, ${dy}px)`;
+  });
+}
+
+// Coloca el sol para que su reflejo empiece después de la frase del horizonte.
+// Se mide la frase de verdad (no se calcula), así funciona con cualquier fuente, tamaño o escala.
+// Si hay sitio, el sol queda centrado; si no, se desplaza a la derecha lo justo.
+function placeSun() {
+  const hero = document.querySelector('.hero');
+  const footer = document.querySelector('.hero__footer');
+  const tagline = footer && footer.querySelector('p');
+  const sunBox = document.querySelector('.sun');
+  if (!hero || !tagline || !sunBox) return;
+
+  // En móviles (< 700 px) la frase ocupa dos líneas: manda el CSS (sol al 70 %)
+  if (window.innerWidth < 700) {
+    hero.style.removeProperty('--sun-x');
+    return;
+  }
+
+  const left = footer.getBoundingClientRect().left;
+  const width = footer.clientWidth;
+  const sun = sunBox.offsetWidth;
+  // Final real de la línea: el último pez (sobresale un poco del párrafo)
+  const fish = tagline.querySelector('.fish-progress');
+  const textEnd = Math.max(
+    tagline.getBoundingClientRect().right,
+    fish ? fish.getBoundingClientRect().right : 0
+  ) - left;
+
+  // La raya más larga del reflejo mide el 70 % del sol (35 % a cada lado del centro)
+  // y con el brillo puede crecer un 7 %; más 16 px de aire
+  const center = Math.max(width / 2, textEnd + sun * 0.42 + 16);
+  hero.style.setProperty('--sun-x', `${Math.round(center)}px`);
+}
+
+function layoutPixels() {
+  crispPixels();
+  placeSun();
+}
+
+layoutPixels();
+document.fonts.ready.then(layoutPixels);
+window.addEventListener('resize', layoutPixels);
+// Además, cada vez que cambia el tamaño de la portada (solo depende de la ventana, así no hay bucles)
+const heroSection = document.querySelector('.hero');
+if (heroSection && 'ResizeObserver' in window) new ResizeObserver(layoutPixels).observe(heroSection);
+document.addEventListener('themechange', crispPixels);
+
 // Cabecera: transparente arriba del todo, con fondo al hacer scroll
 const header = document.querySelector('.header');
 
@@ -533,14 +613,19 @@ window.addEventListener('scroll', onHeaderScroll, { passive: true });
 onHeaderScroll();
 
 // Aparición suave de los bloques al hacer scroll
+// Los títulos de sección repiten la animación (y el parpadeo del punto) cada vez que vuelven a verse
 const observer = new IntersectionObserver((entries) => {
   entries.forEach((entry) => {
-    if (entry.isIntersecting) {
+    const replay = entry.target.classList.contains('section__head');
+
+    if (entry.intersectionRatio >= 0.15) {
       entry.target.classList.add('is-visible');
-      observer.unobserve(entry.target);
+      if (!replay) observer.unobserve(entry.target);
+    } else if (replay && !entry.isIntersecting) {
+      entry.target.classList.remove('is-visible'); // fuera de pantalla: lista para repetir
     }
   });
-}, { threshold: 0.15 });
+}, { threshold: [0, 0.15] });
 
 document.querySelectorAll('.reveal').forEach((el) => observer.observe(el));
 
