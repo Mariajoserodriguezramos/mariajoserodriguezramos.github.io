@@ -1,0 +1,673 @@
+/* ---------- Variables ---------- */
+:root {
+  /* Paleta cálida: crema, casi negro cálido y calabaza */
+  --bg: #f7f2ea;
+  --fg: #1e1915;
+  --muted: #8b8075;
+  --line: #e6ddd0;
+  --accent: #d2602b; /* calabaza: puntos de secciones y pie */
+  --red: #c2372b;    /* rojo ladrillo: punto de la portada */
+
+  /* Atardecer de la portada */
+  --sky-0: #e4e8ee; /* azul pálido arriba, para que se vean las nubes */
+  --sky-1: #f9e7d3;
+  --sky-2: #f4d6c4;
+  --sun-top: #f9b24a;
+  --sun-bottom: #ea5f55;
+  --sea: #dde3e1;
+  --dusk-1: #f9d3b0; /* cielo naranja al final del scroll */
+  --dusk-2: #f2b894;
+  --cloud: #fffcf6;
+  --cloud-shade: #f4d4c0; /* panza de la nube iluminada por el atardecer */
+  --bird: #5e5049;
+
+  /* Hojas: ocre, calabaza y rojo, con el nervio marrón */
+  --leaf-1: #d89a3a;
+  --leaf-2: #d2602b;
+  --leaf-3: #b0402f;
+  --leaf-vein: #6e3a1f;
+
+  --sans: "Geist", system-ui, sans-serif;
+  --mono: "Geist Mono", ui-monospace, monospace;
+
+  --gutter: clamp(1rem, 4vw, 2.5rem);
+  --max: 1280px;
+}
+
+@media (prefers-color-scheme: dark) {
+  :root {
+    --bg: #15110e;
+    --fg: #f0e9df;
+    --muted: #8f8478;
+    --line: #2a231d;
+    --accent: #ec7d43;
+    --red: #f2584a;
+
+    /* Anochecer en morados */
+    --sky-0: #100d18;
+    --sky-1: #1c1220;
+    --sky-2: #2a1526;
+    --sun-top: #f472b6;
+    --sun-bottom: #7c3aed;
+    --sea: #121a24;
+    --dusk-1: #3a1a33;
+    --dusk-2: #4d2133;
+    --cloud: #2c2338;
+    --cloud-shade: #3e2840;
+    --bird: #c4b2a8;
+
+    --leaf-1: #c08a36;
+    --leaf-2: #d06a35;
+    --leaf-3: #a8463a;
+    --leaf-vein: #4a2716;
+  }
+}
+
+/* ---------- Base ---------- */
+*,
+*::before,
+*::after { box-sizing: border-box; }
+
+html { scroll-behavior: smooth; }
+
+body {
+  margin: 0;
+  background: var(--bg);
+  color: var(--fg);
+  font-family: var(--sans);
+  font-size: 1rem;
+  line-height: 1.5;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Textura de papel: grano muy suave encima de todo (no bloquea clics) */
+body::after {
+  content: "";
+  position: fixed;
+  inset: 0;
+  z-index: 50;
+  pointer-events: none;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='180' height='180'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' stitchTiles='stitch'/%3E%3CfeColorMatrix type='saturate' values='0'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+  opacity: 0.08;
+  mix-blend-mode: multiply;
+}
+
+@media (prefers-color-scheme: dark) {
+  body::after { opacity: 0.05; mix-blend-mode: screen; }
+}
+
+a { color: inherit; text-decoration: none; }
+
+h1, h2, h3, p, ul, ol, dl, dd { margin: 0; padding: 0; }
+ul, ol { list-style: none; }
+
+.mono {
+  font-family: var(--mono);
+  font-size: 0.8125rem;
+  letter-spacing: 0.01em;
+}
+
+.muted { color: var(--muted); }
+
+/* ---------- Punto pixelado ---------- */
+.dot {
+  display: inline-block;
+  width: 0.16em;
+  height: 0.16em;
+  margin-left: 0.05em;
+  background: currentColor;
+}
+
+.dot--accent,
+.section__head .dot { background: var(--accent); }
+
+.dot--red { background: var(--red); }
+
+.dot--blink { animation: blink 1.1s steps(1) infinite; }
+
+@keyframes blink {
+  50% { opacity: 0; }
+}
+
+/* ---------- Cabecera ---------- */
+.header {
+  position: fixed;
+  inset: 0 0 auto 0;
+  z-index: 10;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  padding: 1rem var(--gutter);
+  transition: background 0.3s;
+}
+
+/* Arriba del todo es transparente (si no, las nubes se verían borrosas);
+   al hacer scroll gana fondo para que el texto se lea */
+.header.is-scrolled {
+  background: color-mix(in srgb, var(--bg) 75%, transparent);
+  backdrop-filter: blur(12px);
+  -webkit-backdrop-filter: blur(12px);
+}
+
+.logo {
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  font-size: 0.875rem;
+}
+
+.nav {
+  display: flex;
+  gap: 2rem;
+  margin-left: auto;
+  font-size: 0.875rem;
+  color: var(--muted);
+}
+
+.nav a { transition: color 0.2s; }
+.nav a:hover { color: var(--fg); }
+
+.pill {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.4rem;
+  padding: 0.45rem 1rem;
+  border: 1px solid var(--fg);
+  border-radius: 999px;
+  font-size: 0.875rem;
+  transition: background 0.2s, color 0.2s;
+}
+
+.pill:hover { background: var(--fg); color: var(--bg); }
+
+/* Iconos junto a Escríbeme, GitHub y LinkedIn */
+.link-icon {
+  width: 12px;
+  height: 12px;
+  margin-left: 0.3em;
+  vertical-align: -1px;
+}
+
+/* El avión de papel, además, despega */
+.plane-icon { transition: transform 0.3s; }
+
+/* Al pasar el ratón, despega */
+.mail-btn:hover .plane-icon { transform: translate(3px, -3px); }
+
+/* ---------- Portada ---------- */
+.hero {
+  position: relative;
+  min-height: 100svh;
+  display: flex;
+  flex-direction: column;
+  justify-content: flex-end;
+  padding: 6rem var(--gutter) var(--sea-depth);
+  overflow: hidden;
+  --sun-size: clamp(280px, 50vw, 680px); /* sol y reflejo comparten tamaño */
+  --sea-depth: clamp(7rem, 24vh, 15rem); /* cuánto mar hay bajo el texto */
+}
+
+/* Cielo de atardecer muy sutil */
+.hero__bg {
+  position: absolute;
+  inset: 0;
+  z-index: -1;
+  background: linear-gradient(to bottom, var(--sky-0) 0%, var(--bg) 30%, var(--sky-1) 65%, var(--sky-2) 100%);
+}
+
+/* Al hacer scroll el atardecer avanza: el cielo se vuelve más naranja */
+.hero__bg::after {
+  content: "";
+  position: absolute;
+  inset: 0;
+  background: linear-gradient(to bottom, transparent 20%, var(--dusk-1) 65%, var(--dusk-2) 100%);
+  opacity: var(--scroll, 0);
+}
+
+/* Nubes pixeladas arriba del todo, a la altura de la cabecera */
+.clouds {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 100%;
+  height: 210px;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+/* Pájaros: píxeles más pequeños que las nubes, para que parezcan lejanos */
+.birds {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 100%;
+  height: 70%;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+/* Hojas que caen por la sección Experiencia, detrás del texto */
+.section--leaves { position: relative; }
+
+.leaves {
+  position: absolute;
+  top: 0;
+  left: 0;
+  z-index: -1;
+  width: 100%;
+  height: 100%;
+  image-rendering: pixelated;
+  pointer-events: none;
+}
+
+/* Sol: la caja recorta todo lo que baja de la línea del horizonte */
+.sun {
+  position: absolute;
+  left: 50%;
+  bottom: 100%;
+  z-index: -1;
+  width: var(--sun-size);
+  height: var(--sun-size);
+  overflow: hidden;
+  pointer-events: none;
+  transform: translateX(-50%);
+}
+
+.sun__set {
+  transform: translateY(8%);
+  transition: transform 6s cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+.sun.is-set .sun__set { transform: translateY(40%); }
+
+.sun__canvas {
+  display: block;
+  width: 100%;
+  image-rendering: pixelated;
+  /* 40 % al cargar + 52 % con el scroll = solo asoman las filas de arriba */
+  transform: translateY(calc(var(--scroll, 0) * 52%));
+}
+
+.kicker { margin-bottom: 1.5rem; color: var(--muted); }
+
+/* «+» pixelado de 5×5 a 2 px por píxel, en naranja como los puntos */
+.pixel-plus {
+  width: 10px;
+  height: 10px;
+  margin: 0 0.2em;
+  vertical-align: 0;
+  color: var(--accent);
+  shape-rendering: crispEdges;
+}
+
+.hero__title {
+  font-size: clamp(2.75rem, 8vw, 6.5rem);
+  font-weight: 400;
+  line-height: 1;
+  letter-spacing: -0.04em;
+}
+
+.rotator__verb,
+.rotator__word {
+  display: inline-block;
+  transition: opacity 0.35s, transform 0.35s;
+}
+
+.rotator__word { font-weight: 600; }
+
+/* La palabra sale un poco después que el verbo */
+.rotator__word { transition-delay: 0.05s; }
+
+.rotator.is-out .rotator__verb,
+.rotator.is-out .rotator__word {
+  opacity: 0;
+  transform: translateY(0.15em);
+}
+
+/* Mar: de la línea del horizonte hasta el final de la portada, fundiéndose con el fondo */
+.sea {
+  position: absolute;
+  top: 0;
+  left: calc(-1 * var(--gutter));
+  right: calc(-1 * var(--gutter));
+  height: calc(100% + var(--sea-depth)); /* + padding inferior de .hero */
+  z-index: -1;
+  background: linear-gradient(to bottom, var(--sea), var(--bg));
+}
+
+/* Reflejo: mismo ancho y posición que el sol, para que los píxeles midan igual */
+.reflection {
+  position: absolute;
+  top: 3px;
+  left: 50%;
+  z-index: -1;
+  width: var(--sun-size);
+  transform: translateX(-50%);
+  image-rendering: pixelated;
+  pointer-events: none;
+  opacity: calc(1 - var(--scroll, 0) * 0.6); /* se apaga un poco a la vez que se hunde el sol */
+}
+
+.hero__footer {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+  margin-top: 3rem;
+  padding-top: 1.25rem;
+  border-top: 1px solid var(--line);
+}
+
+.hero__link {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.circle {
+  display: grid;
+  place-items: center;
+  width: 2.5rem;
+  height: 2.5rem;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  transition: transform 0.2s, border-color 0.2s;
+}
+
+.hero__link:hover .circle { transform: translateY(3px); border-color: var(--fg); }
+
+/* ---------- Secciones ---------- */
+.section {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: clamp(5rem, 12vw, 9rem) var(--gutter) 0;
+}
+
+.section__head {
+  display: flex;
+  align-items: baseline;
+  justify-content: space-between;
+  margin-bottom: 3rem;
+}
+
+.section__head h2 {
+  font-size: clamp(2rem, 5vw, 3.5rem);
+  font-weight: 400;
+  letter-spacing: -0.035em;
+  line-height: 1;
+}
+
+/* Proyectos */
+.project {
+  display: grid;
+  /* Título y etiquetas con ancho fijo (cuadran entre filas); la descripción se queda el resto */
+  grid-template-columns: 3rem 17rem 1fr 11rem;
+  align-items: baseline;
+  gap: 1.5rem;
+  padding: 1.5rem 0;
+  border-top: 1px solid var(--line);
+}
+
+.projects li:last-child .project { border-bottom: 1px solid var(--line); }
+
+.project__name {
+  font-size: clamp(1.25rem, 2.5vw, 1.75rem);
+  letter-spacing: -0.02em;
+}
+
+.project__desc {
+  color: var(--muted);
+  text-align: right;
+  text-wrap: balance; /* si se parte, dos líneas parecidas y no una palabra suelta */
+}
+
+.section__head .muted { color: var(--accent); }
+
+/* Cuadradito pixelado de las listas: se apoya en la línea del texto, como el punto de los títulos */
+.bullet {
+  display: inline-block;
+  width: 8px;
+  height: 8px;
+  background: var(--accent);
+}
+
+.project .tags { justify-self: end; white-space: nowrap; }
+
+/* Sobre mí */
+.about {
+  display: grid;
+  grid-template-columns: 2fr 1fr;
+  gap: 3rem;
+  align-items: start; /* texto y ficha empiezan a la misma altura */
+}
+
+.about__text {
+  font-size: clamp(1.375rem, 3vw, 2.25rem);
+  line-height: 1.25;
+  letter-spacing: -0.025em;
+}
+
+.quote {
+  margin: 2.5rem 0 0;
+  padding-left: 1rem;
+  border-left: 3px solid var(--accent);
+}
+
+.quote blockquote {
+  margin: 0;
+  font-family: var(--mono);
+  font-size: 1rem;
+  line-height: 1.6;
+  max-width: 34rem;
+}
+
+.quote figcaption {
+  margin-top: 0.5rem;
+  transition: opacity 0.6s;
+}
+
+/* Máquina de escribir: lo que falta por escribir ya ocupa su sitio,
+   pero transparente, así los saltos de línea no cambian y nada se mueve */
+.typewriter__rest { color: transparent; }
+
+.typewriter__cursor {
+  display: inline-block;
+  width: 0.6em;
+  height: 1.1em;
+  margin-right: -0.6em; /* no ocupa espacio */
+  vertical-align: text-bottom;
+  background: var(--accent);
+  animation: blink 1.1s steps(1) infinite;
+}
+
+/* El autor aparece cuando termina de escribir */
+.quote.is-typing figcaption { opacity: 0; }
+
+.facts div {
+  padding: 0.9rem 0;
+  border-top: 1px solid var(--line);
+}
+
+.facts dt { margin-bottom: 0.2rem; }
+
+/* Setas: encima de «De», apoyadas en la línea de arriba de la ficha */
+.facts__first { position: relative; }
+
+.mushrooms {
+  position: absolute;
+  left: 0;
+  bottom: calc(100% + 1px); /* + 1px de la línea, para que se apoyen encima */
+  width: 93px;
+  height: 36px;
+  shape-rendering: crispEdges;
+}
+
+/* Misma fuente y tamaño que la frase de Dumbledore */
+.facts dd {
+  font-family: var(--mono);
+  font-size: 1rem;
+}
+
+/* Carita grande junto a la frase de Sobre mí: 3 px por píxel en pantallas grandes */
+@media (min-width: 900px) {
+  .pixel-smile.pixel-smile--lg {
+    width: 36px;
+    height: 36px;
+  }
+}
+
+/* Mantiene junta la última palabra y la carita */
+.nowrap { white-space: nowrap; }
+
+/* Carita pixelada de 12×12. Tamaño en px exactos (2 px por píxel)
+   para que no salgan píxeles de distinto tamaño */
+.pixel-smile {
+  width: 24px;
+  height: 24px;
+  margin-left: 0.4em;
+  vertical-align: middle;
+  shape-rendering: crispEdges;
+}
+
+/* Qué hago */
+.service {
+  display: grid;
+  grid-template-columns: 3rem 1fr 1fr;
+  gap: 1.5rem;
+  align-items: baseline;
+  padding: 2rem 0;
+  border-top: 1px solid var(--line);
+}
+
+.service:last-child { border-bottom: 1px solid var(--line); }
+
+.service h3 {
+  font-size: clamp(1.5rem, 3vw, 2.25rem);
+  font-weight: 400;
+  letter-spacing: -0.03em;
+}
+
+.service p {
+  color: var(--muted);
+  max-width: 28rem;
+  justify-self: end;
+  text-align: right;
+  text-wrap: balance; /* como en Experiencia: sin palabras sueltas */
+}
+
+/* ---------- Pie / Contacto ---------- */
+.footer {
+  max-width: var(--max);
+  margin: 0 auto;
+  padding: clamp(5rem, 10vw, 8rem) var(--gutter) 2rem;
+}
+
+/* Taza de café junto a «Aprendiendo»; el humo alterna dos dibujos */
+.coffee {
+  width: 22px;
+  height: 22px;
+  margin-left: 0.4em;
+  vertical-align: -5px;
+  color: var(--muted);
+  shape-rendering: crispEdges;
+}
+
+.coffee__steam { animation: steam 1.2s steps(1) infinite; }
+.coffee__steam--b { animation-delay: -0.6s; }
+
+@keyframes steam {
+  0% { opacity: 1; }
+  50% { opacity: 0; }
+}
+
+.footer__grid {
+  display: grid;
+  grid-template-columns: repeat(4, 1fr);
+  gap: 2rem;
+  padding: 2.5rem 0 4rem;
+  border-top: 1px solid var(--line);
+}
+
+.footer__grid > div {
+  display: flex;
+  flex-direction: column;
+  gap: 0.4rem;
+}
+
+.footer__grid a:hover { color: var(--muted); }
+
+.status {
+  display: inline-block;
+  width: 7px;
+  height: 7px;
+  margin-right: 0.5rem;
+  background: #22c55e;
+}
+
+.footer__bottom {
+  display: flex;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.footer__bottom a:hover { color: var(--fg); }
+
+/* ---------- Animación al hacer scroll ---------- */
+.js .reveal {
+  opacity: 0;
+  transform: translateY(24px);
+  transition: opacity 0.8s ease, transform 0.8s ease;
+}
+
+.js .reveal.is-visible {
+  opacity: 1;
+  transform: none;
+}
+
+/* ---------- Pantallas medianas ---------- */
+@media (max-width: 1100px) {
+  .project { grid-template-columns: 3rem 1fr 1.4fr 11rem; }
+}
+
+/* ---------- Móvil ---------- */
+@media (max-width: 760px) {
+  .nav { display: none; }
+
+  /* En móvil queda detrás del titular: más transparente para que se lea bien */
+  .sun { opacity: 0.5; }
+  .reflection { opacity: calc(0.5 * (1 - var(--scroll, 0) * 0.6)); }
+
+  .project {
+    grid-template-columns: 2rem 1fr;
+    gap: 0.25rem 1rem;
+  }
+
+  .project__desc,
+  .project .tags { grid-column: 2; justify-self: start; }
+
+  .project__desc { text-align: left; }
+
+  .about { grid-template-columns: 1fr; }
+
+  .service { grid-template-columns: 2rem 1fr; gap: 0.5rem 1rem; }
+  .service p { grid-column: 2; justify-self: start; text-align: left; }
+
+  .footer__grid { grid-template-columns: 1fr 1fr; }
+}
+
+/* ---------- Accesibilidad: menos movimiento ---------- */
+@media (prefers-reduced-motion: reduce) {
+  html { scroll-behavior: auto; }
+  .dot--blink { animation: none; }
+  .js .reveal { opacity: 1; transform: none; transition: none; }
+  .rotator__verb,
+  .rotator__word { transition: none; }
+  .sun__set { transition: none; }
+  .mail-btn:hover .plane-icon { transform: none; }
+  .coffee__steam { animation: none; }
+  .coffee__steam--b { opacity: 0; }
+  .sun__canvas { transform: none; }
+}

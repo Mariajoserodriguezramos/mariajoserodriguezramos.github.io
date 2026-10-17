@@ -1,0 +1,246 @@
+<!doctype html>
+<html lang="es">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>María José Rodríguez · HelpDesk y desarrollo web</title>
+  <meta name="description" content="HelpDesk y desarrollo web desde San Fernando (Cádiz). Soporte, frontend y documentación, con el diseño como punto fuerte.">
+
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Geist:wght@300..700&family=Geist+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+  <!-- Cabecera -->
+  <header class="header">
+    <a href="#inicio" class="logo">MARÍA JOSÉ RODRÍGUEZ</a>
+    <nav class="nav" aria-label="Principal">
+      <a href="#experiencia">Experiencia</a>
+      <a href="#sobre-mi">Sobre mí</a>
+      <a href="#que-hago">Qué hago</a>
+    </nav>
+    <a href="#contacto" class="pill">Contacto <span aria-hidden="true">↓</span></a>
+  </header>
+
+  <main>
+
+    <!-- Portada -->
+    <section class="hero" id="inicio">
+      <div class="hero__bg" aria-hidden="true"></div>
+      <canvas class="clouds" aria-hidden="true"></canvas>
+
+      <div class="hero__content">
+        <p class="mono kicker">// helpdesk <svg class="pixel-plus" viewBox="0 0 5 5" role="img" aria-label="y"><path fill="currentColor" d="M2 0h1v5H2zM0 2h5v1H0z"/></svg> desarrollo web</p>
+        <h1 class="hero__title">
+          <span class="rotator" data-pairs="Pienso|clic,Cuido|palabra,Reviso|detalle"><span class="rotator__verb">Pienso</span> cada<br>
+          <span class="rotator__word">clic</span></span><span class="dot dot--red dot--blink" aria-hidden="true"></span>
+        </h1>
+      </div>
+
+      <div class="hero__footer">
+        <!-- Sol pixelado que se esconde tras la línea del horizonte -->
+        <div class="sun" aria-hidden="true">
+          <div class="sun__set">
+            <canvas class="sun__canvas"></canvas>
+          </div>
+        </div>
+
+        <!-- Mar bajo el horizonte y reflejo del sol en píxeles -->
+        <div class="sea" aria-hidden="true"></div>
+        <canvas class="reflection" aria-hidden="true"></canvas>
+
+        <p class="mono muted">Soporte. Front. Documentación. Backend, en camino.</p>
+        <a href="#experiencia" class="hero__link mono">Conóceme <span class="circle" aria-hidden="true">↓</span></a>
+      </div>
+
+      <!-- Al final para que los pájaros pasen por delante del sol -->
+      <canvas class="birds" aria-hidden="true"></canvas>
+    </section>
+
+    <!-- Experiencia -->
+    <section class="section section--leaves" id="experiencia">
+      <!-- Hojas pixeladas que caen detrás de la lista -->
+      <canvas class="leaves" aria-hidden="true"></canvas>
+
+      <div class="section__head reveal">
+        <h2>Experiencia<span class="dot" aria-hidden="true"></span></h2>
+        <span class="mono muted">01</span>
+      </div>
+
+      <ul class="projects">
+        <li class="reveal">
+          <div class="project">
+            <span class="bullet" aria-hidden="true"></span>
+            <span class="project__name">HelpDesk</span>
+            <span class="project__desc">Escuchar, entender el problema y resolverlo.</span>
+            <span class="mono tags">desde 2025</span>
+          </div>
+        </li>
+        <li class="reveal">
+          <div class="project">
+            <span class="bullet" aria-hidden="true"></span>
+            <span class="project__name">Desarrollo en equipo</span>
+            <span class="project__desc">Mejorar en equipo. Si algo no se entiende del todo bien, todavía no está terminado.</span>
+            <span class="mono tags">php · laravel · vue</span>
+          </div>
+        </li>
+        <li class="reveal">
+          <div class="project">
+            <span class="bullet" aria-hidden="true"></span>
+            <span class="project__name">Proyectos personales</span>
+            <span class="project__desc">Webs y apps propias para aprender probando. Aprender como forma de vida.</span>
+            <span class="mono tags">desde 2024</span>
+          </div>
+        </li>
+      </ul>
+    </section>
+
+    <!-- Sobre mí -->
+    <section class="section" id="sobre-mi">
+      <div class="section__head reveal">
+        <h2>Sobre mí<span class="dot" aria-hidden="true"></span></h2>
+        <span class="mono muted">02</span>
+      </div>
+
+      <div class="about">
+        <div>
+          <p class="about__text reveal">
+            Me encanta resolver problemas. Los míos, los tuyos
+            y los que todavía no sabes que <span class="nowrap">tienes.<svg class="pixel-smile pixel-smile--lg" viewBox="0 0 12 12" aria-hidden="true">
+            <!-- cara -->
+            <path fill="#ffd54f" d="M4 1h4v1H4zM2 2h8v2H2zM1 4h10v4H1zM2 8h8v2H2zM4 10h4v1H4z"/>
+            <!-- brillo -->
+            <path fill="#fff6c2" d="M3 2h2v1H3zM2 3h1v1H2z"/>
+            <!-- contorno -->
+            <path fill="#4a3220" d="M4 0h4v1H4zM2 1h2v1H2zM8 1h2v1H8zM1 2h1v2H1zM10 2h1v2h-1zM0 4h1v4H0zM11 4h1v4h-1zM1 8h1v2H1zM10 8h1v2h-1zM2 10h2v1H2zM8 10h2v1H8zM4 11h4v1H4z"/>
+            <!-- ojos y sonrisa -->
+            <path fill="#4a3220" d="M3 4h1v2H3zM8 4h1v2H8zM4 7h1v1H4zM7 7h1v1H7zM5 8h2v1H5z"/>
+            <!-- coloretes -->
+            <path fill="#ff8fa3" d="M2 6h1v1H2zM9 6h1v1H9z"/>
+          </svg></span>
+          </p>
+
+          <figure class="quote reveal">
+            <blockquote class="typewriter">«Son nuestras elecciones las que muestran lo que realmente somos, mucho más que nuestras habilidades».</blockquote>
+            <figcaption class="mono muted">— Albus Dumbledore</figcaption>
+          </figure>
+        </div>
+
+        <dl class="facts reveal">
+          <div class="facts__first">
+            <dt class="mono muted">De</dt>
+            <dd>
+              San Fernando, Cádiz
+              <!-- Setas pixeladas apoyadas en la línea de arriba de la ficha (31×12, a 3 px por píxel) -->
+              <svg class="mushrooms" viewBox="0 0 31 12" aria-hidden="true">
+                <path fill="#3d2a1c" d="M4 0h4v1H4zM2 1h2v1H2zM8 1h2v1H8zM1 2h1v1H1zM10 2h1v1H10zM18 2h4v1H18zM0 3h1v1H0zM11 3h1v1H11zM16 3h2v1H16zM22 3h2v1H22zM0 4h1v1H0zM11 4h1v1H11zM15 4h1v1H15zM24 4h1v1H24zM0 5h1v1H0zM11 5h1v1H11zM15 5h1v1H15zM24 5h1v1H24zM0 6h2v1H0zM10 6h2v1H10zM15 6h2v1H15zM23 6h2v1H23zM3 7h1v1H3zM8 7h1v1H8zM18 7h1v1H18zM21 7h1v1H21zM26 7h3v1H26zM3 8h1v1H3zM8 8h1v1H8zM18 8h1v1H18zM21 8h1v1H21zM25 8h1v1H25zM29 8h1v1H29zM3 9h1v1H3zM8 9h1v1H8zM18 9h1v1H18zM21 9h1v1H21zM25 9h1v1H25zM29 9h1v1H29zM2 10h1v1H2zM9 10h1v1H9zM18 10h1v1H18zM21 10h1v1H21zM25 10h5v1H25zM2 11h8v1H2zM18 11h4v1H18zM26 11h1v1H26zM28 11h1v1H28z"/>
+                <path fill="#d63a2f" d="M4 1h4v1H4zM2 2h2v1H2zM6 2h4v1H6zM1 3h3v1H1zM6 3h2v1H6zM10 3h1v1H10zM18 3h4v1H18zM1 4h1v1H1zM3 4h5v1H3zM10 4h1v1H10zM16 4h1v1H16zM18 4h3v1H18zM22 4h2v1H22zM1 5h1v1H1zM3 5h3v1H3zM7 5h4v1H7zM16 5h3v1H16zM20 5h4v1H20zM26 8h2v1H26zM26 9h3v1H26z"/>
+                <path fill="#fff6ea" d="M4 2h2v1H4zM4 3h2v1H4zM8 3h2v1H8zM2 4h1v1H2zM8 4h2v1H8zM17 4h1v1H17zM21 4h1v1H21zM2 5h1v1H2zM6 5h1v1H6zM19 5h1v1H19zM28 8h1v1H28z"/>
+                <path fill="#ead8bc" d="M2 6h8v1H2zM17 6h6v1H17z"/>
+                <path fill="#f3e7d3" d="M4 7h3v1H4zM19 7h1v1H19zM4 8h3v1H4zM19 8h1v1H19zM4 9h3v1H4zM19 9h1v1H19zM3 10h5v1H3zM19 10h1v1H19zM27 11h1v1H27z"/>
+                <path fill="#d8c4a5" d="M7 7h1v1H7zM20 7h1v1H20zM7 8h1v1H7zM20 8h1v1H20zM7 9h1v1H7zM20 9h1v1H20zM8 10h1v1H8zM20 10h1v1H20z"/>
+              </svg>
+            </dd>
+          </div>
+          <div><dt class="mono muted">Idiomas</dt><dd>Español · aprendiendo inglés</dd></div>
+          <div><dt class="mono muted">Actitud</dt><dd>Implicada y dispuesta, hasta un lunes a primera hora</dd></div>
+          <div><dt class="mono muted">Modo</dt><dd>Al 100 %, por defecto</dd></div>
+        </dl>
+      </div>
+    </section>
+
+    <!-- Qué hago -->
+    <section class="section" id="que-hago">
+      <div class="section__head reveal">
+        <h2>Qué hago<span class="dot" aria-hidden="true"></span></h2>
+        <span class="mono muted">03</span>
+      </div>
+
+      <ol class="services">
+        <li class="service reveal">
+          <span class="bullet" aria-hidden="true"></span>
+          <h3>Soporte</h3>
+          <p>Resuelvo incidencias y explico soluciones.</p>
+        </li>
+        <li class="service reveal">
+          <span class="bullet" aria-hidden="true"></span>
+          <h3>Frontend y diseño</h3>
+          <p>Interfaces cuidadas, con textos que se entienden y un estilo propio.</p>
+        </li>
+        <li class="service reveal">
+          <span class="bullet" aria-hidden="true"></span>
+          <h3>Documentación</h3>
+          <p>Lo que no se escribe, se olvida. Explicar bien también forma parte de programar. Tu yo del futuro te lo agradecerá.</p>
+        </li>
+      </ol>
+    </section>
+
+  </main>
+
+  <!-- Contacto -->
+  <footer class="footer" id="contacto">
+    <div class="footer__grid mono">
+      <div>
+        <p class="muted">Menú</p>
+        <a href="#experiencia">Experiencia</a>
+        <a href="#sobre-mi">Sobre mí</a>
+        <a href="#que-hago">Qué hago</a>
+      </div>
+      <div>
+        <p class="muted">Contacto</p>
+        <!-- El email no se escribe entero aquí: lo monta main.js (menos spam) -->
+        <a href="#contacto" class="mail-btn" data-user="mariajoserodriguezramos" data-domain="outlook.com">
+          Escríbeme
+          <!-- Icono «send» de Feather Icons (licencia MIT) -->
+          <svg class="link-icon plane-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <line x1="22" y1="2" x2="11" y2="13"/>
+            <polygon points="22 2 15 22 11 13 2 9 22 2"/>
+          </svg>
+        </a>
+        <!-- Iconos «github» y «linkedin» de Feather Icons (licencia MIT) -->
+        <a href="https://github.com/Mariajoserodriguezramos" target="_blank" rel="noopener">
+          GitHub
+          <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M9 19c-5 1.5-5-2.5-7-3m14 6v-3.87a3.37 3.37 0 0 0-.94-2.61c3.14-.35 6.44-1.54 6.44-7A5.44 5.44 0 0 0 20 4.77 5.07 5.07 0 0 0 19.91 1S18.73.65 16 2.48a13.38 13.38 0 0 0-7 0C6.27.65 5.09 1 5.09 1A5.07 5.07 0 0 0 5 4.77a5.44 5.44 0 0 0-1.5 3.78c0 5.42 3.3 6.61 6.44 7A3.37 3.37 0 0 0 9 18.13V22"/>
+          </svg>
+        </a>
+        <a href="https://www.linkedin.com/in/maria-jose-rodriguezramos" target="_blank" rel="noopener">
+          LinkedIn
+          <svg class="link-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+            <path d="M16 8a6 6 0 0 1 6 6v7h-4v-7a2 2 0 0 0-2-2 2 2 0 0 0-2 2v7h-4v-7a6 6 0 0 1 6-6z"/>
+            <rect x="2" y="9" width="4" height="12"/>
+            <circle cx="4" cy="4" r="2"/>
+          </svg>
+        </a>
+      </div>
+      <div>
+        <p class="muted">Ahora</p>
+        <p><span class="status" aria-hidden="true"></span>Aprendiendo
+          <!-- Taza de café pixelada con humo (11×11, a 2 px por píxel) -->
+          <svg class="coffee" viewBox="0 0 11 11" aria-hidden="true">
+            <g class="coffee__steam coffee__steam--a"><path fill="currentColor" d="M3 0h1v1H3zM7 0h1v1H7zM4 1h1v1H4zM6 1h1v1H6zM3 2h1v1H3zM7 2h1v1H7zM4 3h1v1H4zM6 3h1v1H6z"/></g>
+            <g class="coffee__steam coffee__steam--b"><path fill="currentColor" d="M4 0h1v1H4zM6 0h1v1H6zM3 1h1v1H3zM7 1h1v1H7zM4 2h1v1H4zM6 2h1v1H6zM3 3h1v1H3zM7 3h1v1H7z"/></g>
+            <path fill="#3d2a1c" d="M1 4h8v1H1zM1 5h1v1H1zM8 5h1v1H8zM1 6h1v1H1zM8 6h3v1H8zM1 7h1v1H1zM8 7h1v1H8zM10 7h1v1H10zM1 8h1v1H1zM8 8h3v1H8zM1 9h1v1H1zM8 9h1v1H8zM2 10h6v1H2z"/>
+            <path fill="#5a3620" d="M2 5h6v1H2z"/>
+            <path fill="#c8562a" d="M2 6h1v1H2zM4 6h4v1H4zM2 7h1v1H2zM4 7h4v1H4zM2 8h6v1H2zM2 9h6v1H2z"/>
+            <path fill="#e8875a" d="M3 6h1v1H3zM3 7h1v1H3z"/>
+          </svg>
+        </p>
+      </div>
+      <div>
+        <p class="muted">Ubicación</p>
+        <p>San Fernando · <span id="clock">--:--</span></p>
+      </div>
+    </div>
+
+    <div class="footer__bottom mono muted">
+      <span>© <span id="year">2026</span> María José Rodríguez</span>
+      <a href="#inicio">Volver arriba ↑</a>
+    </div>
+  </footer>
+
+  <script src="main.js"></script>
+</body>
+</html>
